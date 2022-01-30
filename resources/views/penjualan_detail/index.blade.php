@@ -219,11 +219,9 @@
                 return;
             }
 
-            if (jumlah > stok ) {
-                $(this).val(stok);
-                alert('Jumlah tidak boleh lebih dari stok '+stok);
+            if ($(this).val() == ""){
                 return;
-            }
+            }            
             
             $.post(`{{ url('/transaksi') }}/${id}`, {
                     '_token': $('[name=csrf-token]').attr('content'),
@@ -232,6 +230,11 @@
                 })
                 .done(response => {
                     $(this).on('mouseout', function () {
+                        if (jumlah > stok ) {
+                            $(this).val(stok);
+                            alert('Jumlah tidak boleh lebih dari stok '+stok);
+                            return;
+                        }
                         table.ajax.reload(() => loadForm($('#diskon').val()));
                     });
                 })
