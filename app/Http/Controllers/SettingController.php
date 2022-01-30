@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Setting;
+use Illuminate\Support\Facades\Log;
 
 class SettingController extends Controller
 {
@@ -25,6 +26,13 @@ class SettingController extends Controller
         $setting->alamat = $request->alamat;
         $setting->diskon = $request->diskon;
         $setting->tipe_nota = $request->tipe_nota;
+        Log::info('cek box '.$request->cek_stok );
+        if ($request->cek_stok == "" || $request->cek_stok == null){
+            $setting->cek_stok = 0;
+        } else {
+            $setting->cek_stok = 1;
+        }
+         
 
         if ($request->hasFile('path_logo')) {
             $file = $request->file('path_logo');

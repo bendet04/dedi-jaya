@@ -8,6 +8,7 @@ use App\Models\PenjualanDetail;
 use App\Models\Produk;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class PenjualanDetailController extends Controller
 {
@@ -16,6 +17,7 @@ class PenjualanDetailController extends Controller
         $produk = Produk::orderBy('nama_produk')->get();
         $member = Member::orderBy('nama')->get();
         $diskon = Setting::first()->diskon ?? 0;
+       
 
         // Cek apakah ada transaksi yang sedang berjalan
         if ($id_penjualan = session('id_penjualan')) {
@@ -27,7 +29,7 @@ class PenjualanDetailController extends Controller
             if (auth()->user()->level == 1) {
                 return redirect()->route('transaksi.baru');
             } else {
-                return redirect()->route('home');
+                return redirect()->route('/');
             }
         }
     }
@@ -37,6 +39,7 @@ class PenjualanDetailController extends Controller
         $detail = PenjualanDetail::with('produk')
             ->where('id_penjualan', $id)
             ->get();
+        $cek_stok = Setting::first()->cek_stok;
 
         $data = array();
         $total = 0;
@@ -47,7 +50,7 @@ class PenjualanDetailController extends Controller
             $row['kode_produk'] = '<span class="label label-success">'. $item->produk['kode_produk'] .'</span';
             $row['nama_produk'] = $item->produk['nama_produk'];
             $row['harga_jual']  = 'Rp. '. format_uang($item->harga_jual);
-            $row['jumlah']      = '<input type="number" class="form-control input-sm quantity" data-stok="'. $item->produk['stok'] .'" data-id="'. $item->id_penjualan_detail .'" value="'. $item->jumlah .'">';
+            $row['jumlah']      = '<input type="number" step="0.25" class="form-control input-sm quantity" data-is-cek-stok="'.$cek_stok.'" data-stok="'. $item->produk['stok'] .'" data-id="'. $item->id_penjualan_detail .'" value="'. $item->jumlah .'">';
             $row['diskon']      = $item->diskon . '%';
             $row['subtotal']    = 'Rp. '. format_uang($item->subtotal);
             $row['aksi']        = '<div class="btn-group">
@@ -56,8 +59,10 @@ class PenjualanDetailController extends Controller
             $data[] = $row;
 
             $total += $item->harga_jual * $item->jumlah;
+            #$item->jumlah < 1 ?  $jumlah= 1 : $jumlah= $item->jumlah;
             $total_item += $item->jumlah;
         }
+
         $data[] = [
             'kode_produk' => '
                 <div class="total hide">'. $total .'</div>

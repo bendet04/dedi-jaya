@@ -78,6 +78,13 @@
                             <span class="help-block with-errors"></span>
                         </div>
                     </div>
+                    <div class="form-group row">
+                        <label for="cek_stok" class="col-lg-2 control-label">Cek Stok</label>
+                        <div class="col-lg-6">
+                            <input type="checkbox" id="cek_stok" name="cek_stok">
+                            <span class="help-block with-errors"></span>
+                        </div>
+                    </div>
                 </div>
                 <div class="box-footer text-right">
                     <button class="btn btn-sm btn-flat btn-primary"><i class="fa fa-save"></i> Simpan Perubahan</button>
@@ -128,7 +135,8 @@
                 $('[name=diskon]').val(response.diskon);
                 $('[name=tipe_nota]').val(response.tipe_nota);
                 $('title').text(response.nama_perusahaan + ' | Pengaturan');
-                
+                if (response.cek_stok == 1) $('[name=cek_stok]').prop('checked', true);
+        
                 let words = response.nama_perusahaan.split(' ');
                 let word  = '';
                 words.forEach(w => {

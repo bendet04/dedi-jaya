@@ -206,13 +206,11 @@
 
         $(document).on('input', '.quantity', function () {
             let id = $(this).data('id');
-            let jumlah = parseInt($(this).val());
+            let jumlah = parseFloat($(this).val());
             let stok = $(this).data('stok');
+            let is_cek_stok = $(this).data('is-cek-stok');
 
-            if (jumlah < 1) {
-                $(this).val(1);
-                return;
-            }
+            console.log('jumlah '+jumlah);
 
             if (jumlah > 10000) {
                 $(this).val(10000);
@@ -230,8 +228,8 @@
                 })
                 .done(response => {
                     $(this).on('mouseout', function () {
-                        if (jumlah > stok ) {
-                            $(this).val(stok);
+                        if (jumlah > stok && is_cek_stok == 1) {
+                            // $(this).val(stok);
                             alert('Jumlah tidak boleh lebih dari stok '+stok);
                             return;
                         }
