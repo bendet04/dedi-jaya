@@ -13,7 +13,7 @@
     }
 
     .seribu {
-        font-size: 5em;
+        font-size: 3em;
         text-align: center;
         height: 100px;
     }
@@ -231,12 +231,12 @@
                     'jumlah': jumlah
                 })
                 .done(response => {
-                    $(this).on('change', function () {
+                    $(this).on('mouseout', function () {
                         table.ajax.reload(() => loadForm($('#diskon').val()));
                     });
                 })
                 .fail(errors => {
-                    alert('Tidak dapat menyimpan data');
+                    $(this).val(1);
                     return;
                 });
         });
